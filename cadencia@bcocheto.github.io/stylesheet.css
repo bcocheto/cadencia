@@ -1,0 +1,100 @@
+/* Cadência — popup de mídia no padrão visual do Gavetta */
+
+/* o shell desenha o fundo no boxpointer; sem seta e com o visual do Gavetta */
+.cadencia-boxpointer {
+    -arrow-rise: 0px;
+    -arrow-border-radius: 18px;
+    -arrow-background-color: rgba(34, 34, 38, 0.97);
+    -arrow-border-width: 1px;
+    -arrow-border-color: rgba(255, 255, 255, 0.10);
+    -arrow-box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55);
+}
+.cadencia-boxpointer .popup-menu-content { padding: 0; }
+
+.cadencia-popup {
+    width: 380px;
+    padding: 14px;
+    spacing: 12px;
+    border-radius: 18px;
+    color: #f2f2f2;
+}
+
+/* ── barra ── */
+.cadencia-panel { spacing: 6px; }
+.cadencia-panel-label { font-weight: bold; }
+.panel-button:insensitive .cadencia-panel-icon { opacity: 120; }
+
+/* ── chips de players ── */
+.cadencia-chips { spacing: 5px; padding: 0 2px; }
+.cadencia-chip {
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.82em;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.70);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+.cadencia-chip:hover, .cadencia-chip:focus { background-color: rgba(255, 255, 255, 0.15); }
+.cadencia-chip.active { color: #ffffff; background-color: #3584e4; }
+
+/* ── faixa ── */
+.cadencia-track {
+    spacing: 14px;
+    padding: 12px;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.cadencia-art {
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+    background-size: cover;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.cadencia-art:hover, .cadencia-art:focus { border-color: rgba(98, 160, 234, 0.60); }
+.cadencia-art-icon { icon-size: 36px; color: rgba(255, 255, 255, 0.28); }
+.cadencia-info { spacing: 2px; }
+.cadencia-source { font-size: 0.76em; font-weight: bold; color: #62a0ea; }
+.cadencia-title { font-size: 1.12em; font-weight: bold; color: #f2f2f2; max-height: 2.7em; }
+.cadencia-artist { color: rgba(255, 255, 255, 0.80); }
+.cadencia-meta { font-size: 0.78em; color: rgba(255, 255, 255, 0.50); }
+
+/* ── progresso e volume ── */
+.cadencia-progress { spacing: 2px; padding: 0 4px; }
+.cadencia-times { padding: 0 2px; }
+.cadencia-slider {
+    height: 18px;
+    -barlevel-height: 6px;
+    -barlevel-background-color: rgba(255, 255, 255, 0.14);
+    -barlevel-active-background-color: #3584e4;
+    -barlevel-overdrive-color: #e01b24;
+    -barlevel-border-width: 0;
+    -slider-handle-radius: 7px;
+    color: #62a0ea;
+}
+.cadencia-slider:hover, .cadencia-slider:focus { -barlevel-active-background-color: #62a0ea; }
+
+/* ── controles ── */
+.cadencia-controls { spacing: 10px; }
+.cadencia-btn {
+    padding: 9px;
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.80);
+}
+.cadencia-btn StIcon { icon-size: 18px; }
+.cadencia-btn:hover, .cadencia-btn:focus { background-color: rgba(255, 255, 255, 0.14); color: #ffffff; }
+.cadencia-btn.toggle { color: rgba(255, 255, 255, 0.45); }
+.cadencia-btn.toggle:checked { color: #62a0ea; background-color: rgba(98, 160, 234, 0.20); }
+.cadencia-btn.play { padding: 13px; background-color: #3584e4; color: #ffffff; }
+.cadencia-btn.play StIcon { icon-size: 22px; }
+.cadencia-btn.play:hover, .cadencia-btn.play:focus { background-color: #62a0ea; }
+
+.cadencia-volume { spacing: 10px; padding: 0 6px; }
+.cadencia-vol-icon { icon-size: 16px; color: rgba(255, 255, 255, 0.55); }
+
+/* ── vazio ── */
+.cadencia-empty { padding: 36px 10px; spacing: 8px; }
+.cadencia-empty StIcon { icon-size: 44px; color: rgba(255, 255, 255, 0.28); }
+.cadencia-empty StLabel { color: rgba(255, 255, 255, 0.55); }

@@ -1,0 +1,9 @@
+{
+  "uuid": "cadencia@bcocheto.github.io",
+  "name": "Cadência",
+  "description": "Controle de mídia para o GNOME Shell: indicador na barra e popup com capa, progresso, volume e todos os players MPRIS (Spotify, navegadores, VLC, mpv...).",
+  "shell-version": ["50"],
+  "url": "https://github.com/bcocheto/cadencia",
+  "settings-schema": "org.gnome.shell.extensions.cadencia",
+  "version-name": "0.1.0"
+}

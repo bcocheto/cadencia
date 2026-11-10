@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.cadencia" path="/org/gnome/shell/extensions/cadencia/">
+    <key name="panel-position" type="s">
+      <choices>
+        <choice value="left"/>
+        <choice value="center"/>
+        <choice value="right"/>
+      </choices>
+      <default>"right"</default>
+      <summary>Posição na barra</summary>
+    </key>
+    <key name="show-title" type="b">
+      <default>true</default>
+      <summary>Mostrar título da faixa na barra</summary>
+    </key>
+    <key name="max-title-width" type="i">
+      <range min="80" max="600"/>
+      <default>220</default>
+      <summary>Largura máxima do título na barra (px)</summary>
+    </key>
+    <key name="hide-when-idle" type="b">
+      <default>true</default>
+      <summary>Esconder o indicador quando não há player</summary>
+    </key>
+    <key name="scroll-volume" type="b">
+      <default>true</default>
+      <summary>Rolar o mouse sobre o indicador muda o volume</summary>
+    </key>
+    <key name="volume-step" type="i">
+      <range min="1" max="25"/>
+      <default>5</default>
+      <summary>Passo do volume (%)</summary>
+    </key>
+  </schema>
+</schemalist>
