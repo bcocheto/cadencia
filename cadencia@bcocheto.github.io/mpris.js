@@ -221,6 +221,8 @@ export const Manager = GObject.registerClass({
     _init() {
         super._init();
         this._players = new Map();
+        this._known = new Set();
+        this._blocked = new Set();
         this._pinned = null;
         this._cache = null;
         this._cancellable = new Gio.Cancellable();
@@ -253,9 +255,32 @@ export const Manager = GObject.registerClass({
             });
     }
 
+    // "org.mpris.MediaPlayer2.chromium.instance123" -> "chromium"
+    static idOf(name) {
+        return name.slice(PREFIX.length).replace(/\.instance\d+$/, '').toLowerCase();
+    }
+
+    // lista de ids que o usuário não quer ver (ex.: "chromium", "firefox")
+    setBlocked(ids) {
+        this._blocked = new Set(ids.map(i => i.trim().toLowerCase()).filter(Boolean));
+        for (const name of this._known) {
+            if (this._blocked.has(Manager.idOf(name)))
+                this._drop(name);
+            else
+                this._start(name);
+        }
+    }
+
     _add(name) {
         // playerctld só espelha o player corrente; seria um chip duplicado
-        if (!name.startsWith(PREFIX) || name.endsWith('.playerctld') || this._players.has(name))
+        if (!name.startsWith(PREFIX) || name.endsWith('.playerctld'))
+            return;
+        this._known.add(name);
+        this._start(name);
+    }
+
+    _start(name) {
+        if (this._players.has(name) || this._blocked.has(Manager.idOf(name)))
             return;
         const player = new Player(name);
         player.connectObject('changed', () => this._changed(), this);
@@ -264,6 +289,11 @@ export const Manager = GObject.registerClass({
     }
 
     _remove(name) {
+        this._known.delete(name);
+        this._drop(name);
+    }
+
+    _drop(name) {
         const player = this._players.get(name);
         if (!player)
             return;

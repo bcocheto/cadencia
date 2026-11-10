@@ -6,6 +6,8 @@ import St from 'gi://St';
 
 import {Slider} from 'resource:///org/gnome/shell/ui/slider.js';
 
+import {accentFromFile} from './accent.js';
+
 function fmt(us) {
     const s = Math.max(0, Math.floor(us / 1e6));
     const h = Math.floor(s / 3600);
@@ -27,6 +29,14 @@ function iconButton(icon, styleClass, onClick, accessibleName) {
     return btn;
 }
 
+function setEnabled(widget, enabled) {
+    widget.reactive = widget.can_focus = enabled;
+    if (enabled)
+        widget.remove_style_class_name('disabled');
+    else
+        widget.add_style_class_name('disabled');
+}
+
 function label(styleClass) {
     const l = new St.Label({style_class: styleClass, x_align: Clutter.ActorAlign.START});
     l.clutter_text.ellipsize = Pango.EllipsizeMode.END;
@@ -37,10 +47,12 @@ function label(styleClass) {
 export const MediaCard = GObject.registerClass({
     Signals: {'raise': {}},
 }, class CadenciaCard extends St.BoxLayout {
-    _init(manager, art) {
+    _init(manager, art, settings) {
         super._init({style_class: 'cadencia-popup', vertical: true});
         this._manager = manager;
         this._art = art;
+        this._settings = settings;
+        this._accent = null;
         this._player = null;
         this._artKey = null;
         this._active = false;
@@ -99,8 +111,8 @@ export const MediaCard = GObject.registerClass({
                 this._seekFromSlider();
         });
         const times = new St.BoxLayout({style_class: 'cadencia-times'});
-        this._posLabel = new St.Label({text: '0:00', style_class: 'cadencia-meta', x_expand: true});
-        this._durLabel = new St.Label({text: '0:00', style_class: 'cadencia-meta'});
+        this._posLabel = new St.Label({text: '0:00', style_class: 'cadencia-meta cadencia-time-pos', x_expand: true});
+        this._durLabel = new St.Label({text: '0:00', style_class: 'cadencia-meta cadencia-time-dur'});
         times.add_child(this._posLabel);
         times.add_child(this._durLabel);
         this._progress.add_child(this._seek);
@@ -140,11 +152,14 @@ export const MediaCard = GObject.registerClass({
         // ── vazio ──
         this._empty = new St.BoxLayout({vertical: true, style_class: 'cadencia-empty', x_align: Clutter.ActorAlign.CENTER});
         this._empty.add_child(new St.Icon({icon_name: 'audio-headphones-symbolic', x_align: Clutter.ActorAlign.CENTER}));
-        this._empty.add_child(new St.Label({text: 'Nada tocando', x_align: Clutter.ActorAlign.CENTER}));
-        this._empty.add_child(new St.Label({text: 'Abra um player de mídia para controlá-lo aqui', style_class: 'cadencia-meta', x_align: Clutter.ActorAlign.CENTER}));
+        this._empty.add_child(new St.Label({text: 'Nada tocando', style_class: 'cadencia-empty-title', x_align: Clutter.ActorAlign.CENTER}));
+        this._empty.add_child(new St.Label({text: 'Abra um player para controlá-lo aqui', style_class: 'cadencia-meta', x_align: Clutter.ActorAlign.CENTER}));
         this.add_child(this._empty);
 
         // com o popup fechado só marcamos como desatualizado; reconstrói ao abrir
+        this._layoutId = settings.connect('changed::cover-layout', () => this._applyLayout());
+        this._applyLayout();
+
         this._managerId = manager.connect('changed', () => {
             if (this._active)
                 this.rebuild();
@@ -152,6 +167,37 @@ export const MediaCard = GObject.registerClass({
                 this._dirty = true;
         });
         this.rebuild();
+    }
+
+    // "capa dominante": capa na largura do popup, textos centralizados
+    _applyLayout() {
+        const cover = this._settings.get_boolean('cover-layout');
+        this._track.orientation = cover ? Clutter.Orientation.VERTICAL : Clutter.Orientation.HORIZONTAL;
+        if (cover)
+            this._track.add_style_class_name('cover');
+        else
+            this._track.remove_style_class_name('cover');
+        const align = cover ? Clutter.ActorAlign.CENTER : Clutter.ActorAlign.START;
+        for (const l of [this._source, this._title, this._artist, this._album])
+            l.x_align = align;
+        this._artBin.x_align = cover ? Clutter.ActorAlign.CENTER : Clutter.ActorAlign.START;
+        this._title.clutter_text.set_line_alignment(cover ? Pango.Alignment.CENTER : Pango.Alignment.LEFT);
+    }
+
+    // cor de destaque da capa (null volta ao azul padrão)
+    _applyAccent(color) {
+        this._accent = color;
+        const slider = color ? `-barlevel-active-background-color: ${color}; color: ${color};` : null;
+        this._seek.set_style(slider);
+        this._vol.set_style(slider);
+        this._btnPlay.set_style(color ? `background-color: ${color};` : null);
+        this._source.set_style(color ? `color: ${color};` : null);
+        this._styleChips();
+    }
+
+    _styleChips() {
+        for (const chip of this._chips.get_children())
+            chip.set_style(this._accent && chip.has_style_class_name('active') ? `background-color: ${this._accent};` : null);
     }
 
     // chamado quando o menu abre/fecha: só consulta a posição enquanto visível
@@ -243,14 +289,17 @@ export const MediaCard = GObject.registerClass({
         this._album.text = player.album;
         this._album.visible = !!player.album;
         this._durLabel.text = player.length ? fmt(player.length) : '--:--';
-        this._seek.reactive = player.canSeek && player.length > 0;
-        this._seek.opacity = this._seek.reactive ? 255 : 110;
+        setEnabled(this._seek, player.canSeek && player.length > 0);
+        if (player.playing)
+            this.remove_style_class_name('paused');
+        else
+            this.add_style_class_name('paused');
+        this._artBin.opacity = player.playing ? 255 : 190;
 
         this._btnPlay.child.icon_name = player.playing ? 'media-playback-pause-symbolic' : 'media-playback-start-symbolic';
-        this._btnPrev.reactive = this._btnPrev.can_focus = player.canPrev;
-        this._btnNext.reactive = this._btnNext.can_focus = player.canNext;
-        this._btnPrev.opacity = player.canPrev ? 255 : 90;
-        this._btnNext.opacity = player.canNext ? 255 : 90;
+        this._btnPlay.accessible_name = player.playing ? 'Pausar' : 'Reproduzir';
+        setEnabled(this._btnPrev, player.canPrev);
+        setEnabled(this._btnNext, player.canNext);
 
         this._btnShuffle.visible = player.shuffle !== null;
         this._btnShuffle.remove_style_pseudo_class('checked');
@@ -258,6 +307,8 @@ export const MediaCard = GObject.registerClass({
             this._btnShuffle.add_style_pseudo_class('checked');
         this._btnLoop.visible = player.loop !== null;
         this._btnLoop.child.icon_name = player.loop === 'Track' ? 'media-playlist-repeat-song-symbolic' : 'media-playlist-repeat-symbolic';
+        this._btnLoop.accessible_name = player.loop === 'Track' ? 'Repetir faixa' : player.loop === 'Playlist' ? 'Repetir tudo' : 'Repetição desligada';
+        this._btnShuffle.accessible_name = player.shuffle ? 'Aleatório ligado' : 'Aleatório desligado';
         this._btnLoop.remove_style_pseudo_class('checked');
         if (player.loop && player.loop !== 'None')
             this._btnLoop.add_style_pseudo_class('checked');
@@ -303,6 +354,7 @@ export const MediaCard = GObject.registerClass({
             else
                 chip.remove_style_class_name('active');
         }
+        this._styleChips();
     }
 
     async _loadArt(player) {
@@ -316,15 +368,22 @@ export const MediaCard = GObject.registerClass({
         if (path) {
             const uri = GLib.filename_to_uri(path, null).replace(/'/g, '%27');
             this._artBin.set_style(`background-image: url('${uri}'); background-size: cover;`);
+            this._artBin.remove_style_class_name('no-cover');
             this._artBin.child.visible = false;
+            this._applyAccent(accentFromFile(path));
         } else {
             this._artBin.set_style(null);
+            this._artBin.add_style_class_name('no-cover');
             this._artBin.child.visible = true;
+            this._applyAccent(null);
         }
+        this._artBin.opacity = 0;
+        this._artBin.ease({opacity: this._player?.playing ? 255 : 190, duration: 200, mode: Clutter.AnimationMode.EASE_OUT_QUAD});
     }
 
     vfunc_destroy() {
         this._dead = true;
+        this._settings.disconnect(this._layoutId);
         this._artKey = null;
         this._player = null;
         this._stopTick();

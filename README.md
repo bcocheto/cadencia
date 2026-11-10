@@ -28,16 +28,21 @@ Um indicador discreto com o que está tocando e um popup com capa, progresso, vo
 | 🔊 | **Volume por player** | Controle no popup ou role o mouse sobre o indicador |
 | 🗂️ | **Vários players** | Chips no topo trocam de player; por padrão vale o que está tocando agora |
 | 🖱️ | **Atalhos no indicador** | Clique abre o popup, clique do meio alterna tocar/pausar, rolar muda o volume |
+| 🌈 | **Cor da capa** | A barra de progresso, o botão de play e o chip ativo assumem a cor dominante da capa |
+| 🖼️ | **Capa em destaque** | Layout opcional com a capa na largura do popup |
+| 🚫 | **Players ignorados** | Esconda players que só atrapalham (abas mudas do navegador, por exemplo) |
+| 🏷️ | **Texto da barra** | Título, artista e álbum com separador configurável, e o ícone do app no lugar do ícone de estado |
 | 🪟 | **Abrir o player** | Clique na capa para trazer a janela do player à frente |
-| ⚙️ | **Preferências** | Posição na barra, título, largura máxima, esconder sem player e passo do volume |
+| ⚙️ | **Preferências** | Posição, texto e ícone da barra, layout do popup, players ignorados e passo do volume |
 | 🎨 | **Visual do Gavetta** | Mesma paleta, cantos arredondados e chips da extensão [Gavetta](https://github.com/bcocheto/gavetta) |
 
 ## 📸 Capturas
 
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/01-popup.png" width="400" alt="Reproduzindo"><br><sub>Tocando, com dois players abertos</sub></td>
-    <td align="center"><img src="docs/screenshots/02-pausado.png" width="400" alt="Pausado"><br><sub>Pausado: o ícone da barra muda</sub></td>
+    <td align="center"><img src="docs/screenshots/01-popup.png" width="300" alt="Reproduzindo"><br><sub>Tocando, com dois players abertos</sub></td>
+    <td align="center"><img src="docs/screenshots/02-pausado.png" width="300" alt="Pausado"><br><sub>Pausado: barra e capa ficam discretas</sub></td>
+    <td align="center"><img src="docs/screenshots/03-capa-em-destaque.png" width="300" alt="Capa em destaque"><br><sub>Layout com a capa em destaque</sub></td>
   </tr>
 </table>
 
@@ -75,6 +80,7 @@ players MPRIS (D-Bus) ──► Manager ──► indicador na barra
 - `mpris.js`: descobre players pelo D-Bus, acompanha mudanças e expõe os comandos.
 - `art.js`: resolve a capa (local ou remota com cache).
 - `card.js`: o popup.
+- `accent.js`: cor dominante da capa.
 - `extension.js`: o indicador, o scroll e o clique do meio.
 
 ## 🛠️ Desenvolvimento
@@ -89,7 +95,11 @@ players MPRIS (D-Bus) ──► Manager ──► indicador na barra
 ## 🗺️ Próximos passos
 
 - [ ] Publicar no extensions.gnome.org
-- [ ] Cor de destaque extraída da capa
+- [x] Cor de destaque extraída da capa
+- [x] Players ignorados e texto da barra configurável
+- [ ] Tradução (gettext)
+- [ ] Ações configuráveis de clique e scroll
+- [ ] Texto rolante para títulos longos
 - [ ] Atalho global para abrir o popup
 - [ ] Limpeza automática do cache de capas
 

@@ -32,5 +32,29 @@
       <default>5</default>
       <summary>Passo do volume (%)</summary>
     </key>
+    <key name="show-artist" type="b">
+      <default>true</default>
+      <summary>Mostrar o artista na barra</summary>
+    </key>
+    <key name="show-album" type="b">
+      <default>false</default>
+      <summary>Mostrar o álbum na barra</summary>
+    </key>
+    <key name="separator" type="s">
+      <default>" — "</default>
+      <summary>Separador entre título, artista e álbum na barra</summary>
+    </key>
+    <key name="use-app-icon" type="b">
+      <default>false</default>
+      <summary>Usar o ícone do aplicativo na barra, em vez do ícone de estado</summary>
+    </key>
+    <key name="cover-layout" type="b">
+      <default>false</default>
+      <summary>Popup com a capa em destaque</summary>
+    </key>
+    <key name="blocked-players" type="as">
+      <default>[]</default>
+      <summary>Players ignorados (nome do serviço MPRIS, sem prefixo e sem instância)</summary>
+    </key>
   </schema>
 </schemalist>
