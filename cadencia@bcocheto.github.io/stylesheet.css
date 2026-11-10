@@ -1,4 +1,5 @@
-/* Cadência — estilo do popup de mídia */
+/* Cadência — estilo do popup de mídia.
+   A cor de destaque vem do sistema (-st-accent-color, Configurações > Aparência). */
 
 /* O shell pinta o fundo no boxpointer, por baixo do conteúdo. Aqui ele fica sem seta e
    transparente; quem desenha fundo, borda e sombra é o próprio .cadencia-popup. */
@@ -44,8 +45,8 @@
     background-color: rgba(255, 255, 255, 0.06);
 }
 .cadencia-chip:hover { background-color: rgba(255, 255, 255, 0.15); }
-.cadencia-chip:focus { box-shadow: inset 0 0 0 2px #62a0ea; }
-.cadencia-chip.active { color: #ffffff; background-color: #3584e4; }
+.cadencia-chip:focus { box-shadow: inset 0 0 0 2px st-mix(-st-accent-color, #ffffff, 30%); }
+.cadencia-chip.active { color: -st-accent-fg-color; background-color: -st-accent-color; }
 
 /* ── faixa ── */
 .cadencia-track {
@@ -62,16 +63,16 @@
     background-color: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
-.cadencia-art:hover { border-color: rgba(98, 160, 234, 0.60); }
-.cadencia-art:focus { box-shadow: inset 0 0 0 2px #62a0ea; }
+.cadencia-art:hover { border-color: st-transparentize(st-mix(-st-accent-color, #ffffff, 30%), 0.4); }
+.cadencia-art:focus { box-shadow: inset 0 0 0 2px st-mix(-st-accent-color, #ffffff, 30%); }
 .cadencia-art.no-cover {
     background-gradient-direction: vertical;
-    background-gradient-start: rgba(53, 132, 228, 0.30);
-    background-gradient-end: rgba(53, 132, 228, 0.08);
+    background-gradient-start: st-transparentize(-st-accent-color, 0.7);
+    background-gradient-end: st-transparentize(-st-accent-color, 0.92);
 }
 .cadencia-art-icon { icon-size: 40px; color: rgba(255, 255, 255, 0.45); }
 .cadencia-info { spacing: 2px; }
-.cadencia-source { font-size: 0.76em; font-weight: bold; color: #62a0ea; }
+.cadencia-source { font-size: 0.76em; font-weight: bold; color: st-mix(-st-accent-color, #ffffff, 30%); }
 .cadencia-title { font-size: 1.2em; font-weight: 800; color: #f2f2f2; max-height: 2.7em; }
 .cadencia-artist { color: rgba(255, 255, 255, 0.85); }
 .cadencia-meta { font-size: 0.82em; color: rgba(255, 255, 255, 0.60); }
@@ -96,14 +97,14 @@
     height: 18px;
     -barlevel-height: 6px;
     -barlevel-background-color: rgba(255, 255, 255, 0.14);
-    -barlevel-active-background-color: #3584e4;
+    -barlevel-active-background-color: -st-accent-color;
     -barlevel-overdrive-color: #e01b24;
     -barlevel-border-width: 0;
     -slider-handle-radius: 7px;
-    color: #62a0ea;
+    color: st-mix(-st-accent-color, #ffffff, 30%);
 }
-.cadencia-slider:hover { -barlevel-active-background-color: #62a0ea; }
-.cadencia-slider:focus { -slider-handle-border-width: 2px; -slider-handle-border-color: #62a0ea; }
+.cadencia-slider:hover { -barlevel-active-background-color: st-mix(-st-accent-color, #ffffff, 30%); }
+.cadencia-slider:focus { -slider-handle-border-width: 2px; -slider-handle-border-color: st-mix(-st-accent-color, #ffffff, 30%); }
 .cadencia-slider.disabled { -slider-handle-radius: 0px; -barlevel-active-background-color: rgba(255, 255, 255, 0.25); }
 .cadencia-popup.paused .cadencia-progress .cadencia-slider { -barlevel-active-background-color: rgba(255, 255, 255, 0.55); }
 .cadencia-volume .cadencia-slider { -barlevel-height: 4px; -slider-handle-radius: 5px; }
@@ -118,14 +119,14 @@
 .cadencia-btn StIcon { icon-size: 18px; }
 .cadencia-btn:hover { background-color: rgba(255, 255, 255, 0.14); color: #ffffff; }
 .cadencia-btn:active { background-color: rgba(255, 255, 255, 0.22); }
-.cadencia-btn:focus { box-shadow: inset 0 0 0 2px #62a0ea; }
+.cadencia-btn:focus { box-shadow: inset 0 0 0 2px st-mix(-st-accent-color, #ffffff, 30%); }
 .cadencia-btn.disabled { color: rgba(255, 255, 255, 0.28); background: none; }
 .cadencia-btn.toggle { color: rgba(255, 255, 255, 0.55); }
-.cadencia-btn.toggle:checked { color: #62a0ea; background-color: rgba(98, 160, 234, 0.22); box-shadow: inset 0 -2px 0 #62a0ea; }
-.cadencia-btn.play { padding: 13px; background-color: #3584e4; color: #ffffff; }
+.cadencia-btn.toggle:checked { color: st-mix(-st-accent-color, #ffffff, 30%); background-color: st-transparentize(st-mix(-st-accent-color, #ffffff, 30%), 0.78); box-shadow: inset 0 -2px 0 st-mix(-st-accent-color, #ffffff, 30%); }
+.cadencia-btn.play { padding: 13px; background-color: -st-accent-color; color: -st-accent-fg-color; }
 .cadencia-btn.play StIcon { icon-size: 22px; }
-.cadencia-btn.play:hover { background-color: #62a0ea; }
-.cadencia-btn.play:active { background-color: #1c71d8; }
+.cadencia-btn.play:hover { background-color: st-mix(-st-accent-color, #ffffff, 15%); }
+.cadencia-btn.play:active { background-color: st-mix(-st-accent-color, #000000, 15%); }
 .cadencia-btn.play:focus { box-shadow: inset 0 0 0 2px #ffffff; }
 
 .cadencia-volume { spacing: 10px; padding: 2px 6px 0 6px; }

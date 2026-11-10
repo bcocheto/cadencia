@@ -53,6 +53,7 @@ export const MediaCard = GObject.registerClass({
         this._art = art;
         this._settings = settings;
         this._accent = null;
+        this._coverAccent = null;
         this._player = null;
         this._artKey = null;
         this._active = false;
@@ -158,6 +159,7 @@ export const MediaCard = GObject.registerClass({
 
         // com o popup fechado só marcamos como desatualizado; reconstrói ao abrir
         this._layoutId = settings.connect('changed::cover-layout', () => this._applyLayout());
+        this._accentId = settings.connect('changed::accent-source', () => this._syncAccent());
         this._applyLayout();
 
         this._managerId = manager.connect('changed', () => {
@@ -193,6 +195,12 @@ export const MediaCard = GObject.registerClass({
         this._btnPlay.set_style(color ? `background-color: ${color};` : null);
         this._source.set_style(color ? `color: ${color};` : null);
         this._styleChips();
+    }
+
+    // sistema: o CSS usa -st-accent-color e nada é sobrescrito; capa: tom dominante da capa
+    _syncAccent() {
+        const fromCover = this._settings.get_string('accent-source') === 'cover';
+        this._applyAccent(fromCover ? this._coverAccent : null);
     }
 
     _styleChips() {
@@ -370,13 +378,14 @@ export const MediaCard = GObject.registerClass({
             this._artBin.set_style(`background-image: url('${uri}'); background-size: cover;`);
             this._artBin.remove_style_class_name('no-cover');
             this._artBin.child.visible = false;
-            this._applyAccent(accentFromFile(path));
+            this._coverAccent = accentFromFile(path);
         } else {
             this._artBin.set_style(null);
             this._artBin.add_style_class_name('no-cover');
             this._artBin.child.visible = true;
-            this._applyAccent(null);
+            this._coverAccent = null;
         }
+        this._syncAccent();
         this._artBin.opacity = 0;
         this._artBin.ease({opacity: this._player?.playing ? 255 : 190, duration: 200, mode: Clutter.AnimationMode.EASE_OUT_QUAD});
     }
@@ -384,6 +393,7 @@ export const MediaCard = GObject.registerClass({
     vfunc_destroy() {
         this._dead = true;
         this._settings.disconnect(this._layoutId);
+        this._settings.disconnect(this._accentId);
         this._artKey = null;
         this._player = null;
         this._stopTick();

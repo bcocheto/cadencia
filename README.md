@@ -28,13 +28,14 @@ Um indicador discreto com o que está tocando e um popup com capa, progresso, vo
 | 🔊 | **Volume por player** | Controle no popup ou role o mouse sobre o indicador |
 | 🗂️ | **Vários players** | Chips no topo trocam de player; por padrão vale o que está tocando agora |
 | 🖱️ | **Atalhos no indicador** | Clique abre o popup, clique do meio alterna tocar/pausar, rolar muda o volume |
-| 🌈 | **Cor da capa** | A barra de progresso, o botão de play e o chip ativo assumem a cor dominante da capa |
+| 🎨 | **Cor de destaque do sistema** | Segue a cor de destaque do GNOME (Configurações > Aparência), inclusive quando você troca |
+| 🌈 | **Cor da capa (opcional)** | Em vez da cor do sistema, a barra de progresso, o play e o chip ativo assumem a cor dominante da capa |
 | 🖼️ | **Capa em destaque** | Layout opcional com a capa na largura do popup |
 | 🚫 | **Players ignorados** | Esconda players que só atrapalham (abas mudas do navegador, por exemplo) |
 | 🏷️ | **Texto da barra** | Título, artista e álbum com separador configurável, e o ícone do app no lugar do ícone de estado |
 | 🪟 | **Abrir o player** | Clique na capa para trazer a janela do player à frente |
 | ⚙️ | **Preferências** | Posição, texto e ícone da barra, layout do popup, players ignorados e passo do volume |
-| 🎨 | **Visual do Gavetta** | Mesma paleta, cantos arredondados e chips da extensão [Gavetta](https://github.com/bcocheto/gavetta) |
+| 🎨 | **Visual do Gavetta** | Mesmos cantos arredondados, chips e cartões da extensão [Gavetta](https://github.com/bcocheto/gavetta) |
 
 ## 📸 Capturas
 
@@ -89,6 +90,7 @@ players MPRIS (D-Bus) ──► Manager ──► indicador na barra
 |---|---|
 | `make install` | Compila o schema e copia para `~/.local/share/gnome-shell/extensions` |
 | `make run` | Shell aninhado para testar |
+| `tools/headless-shot.sh saida.png [duo\|solo\|pause\|cover\|block\|green]` | Abre um shell sem tela com players falsos e salva uma captura do popup |
 | `make lint` | Checa a sintaxe, o schema e roda o ESLint (`npm i` antes) |
 | `make pack` | Gera `dist/cadencia@bcocheto.github.io.shell-extension.zip` |
 

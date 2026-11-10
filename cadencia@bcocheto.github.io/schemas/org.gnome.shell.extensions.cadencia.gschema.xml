@@ -48,6 +48,14 @@
       <default>false</default>
       <summary>Usar o ícone do aplicativo na barra, em vez do ícone de estado</summary>
     </key>
+    <key name="accent-source" type="s">
+      <choices>
+        <choice value="system"/>
+        <choice value="cover"/>
+      </choices>
+      <default>"system"</default>
+      <summary>Origem da cor de destaque: cor de destaque do sistema ou cor dominante da capa</summary>
+    </key>
     <key name="cover-layout" type="b">
       <default>false</default>
       <summary>Popup com a capa em destaque</summary>

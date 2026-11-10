@@ -5,6 +5,7 @@ import Gtk from 'gi://Gtk';
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 const POSITIONS = ['left', 'center', 'right'];
+const ACCENTS = ['system', 'cover'];
 
 export default class CadenciaPrefs extends ExtensionPreferences {
     fillPreferencesWindow(window) {
@@ -69,6 +70,16 @@ export default class CadenciaPrefs extends ExtensionPreferences {
         page.add(input);
 
         const popup = new Adw.PreferencesGroup({title: 'Popup'});
+        const accent = new Adw.ComboRow({
+            title: 'Cor de destaque',
+            subtitle: 'Do sistema (Configurações > Aparência) ou da capa do álbum',
+            model: Gtk.StringList.new(['Cor do sistema', 'Capa do álbum']),
+            selected: Math.max(0, ACCENTS.indexOf(s.get_string('accent-source'))),
+        });
+        accent.connect('notify::selected', () => s.set_string('accent-source', ACCENTS[accent.selected]));
+        popup.add(accent);
+
+
         const cover = new Adw.SwitchRow({
             title: 'Capa em destaque',
             subtitle: 'A capa ocupa a largura do popup, com o texto centralizado',
