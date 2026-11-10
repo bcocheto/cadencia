@@ -1,6 +1,6 @@
-/* Cadência — popup de mídia no padrão visual do Gavetta */
+/* Cadência — estilo do popup de mídia */
 
-/* o shell desenha o fundo no boxpointer; sem seta e com o visual do Gavetta */
+/* o shell desenha o fundo no boxpointer; aqui ele fica sem seta */
 .cadencia-boxpointer {
     -arrow-rise: 0px;
     -arrow-border-radius: 18px;

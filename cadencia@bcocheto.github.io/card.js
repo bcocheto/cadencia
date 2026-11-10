@@ -33,7 +33,7 @@ function label(styleClass) {
     return l;
 }
 
-// Corpo do popup: players, capa, faixa, progresso, controles e volume (visual do Gavetta)
+// Corpo do popup: players, capa, faixa, progresso, controles e volume
 export const MediaCard = GObject.registerClass({
     Signals: {'raise': {}},
 }, class CadenciaCard extends St.BoxLayout {
@@ -44,7 +44,11 @@ export const MediaCard = GObject.registerClass({
         this._player = null;
         this._artKey = null;
         this._active = false;
+        this._dead = false;
+        this._dirty = false;
+        this._chipsKey = '';
         this._dragging = false;
+        this._volDragging = false;
         this._updating = false;
         this._position = 0;
         this._tick = 0;
@@ -121,6 +125,8 @@ export const MediaCard = GObject.registerClass({
         this._vol.add_style_class_name('cadencia-slider');
         this._vol.x_expand = true;
         this._vol.y_align = Clutter.ActorAlign.CENTER;
+        this._vol.connect('drag-begin', () => (this._volDragging = true));
+        this._vol.connect('drag-end', () => (this._volDragging = false));
         this._vol.connect('notify::value', () => {
             if (this._updating || !this._player)
                 return;
@@ -138,20 +144,38 @@ export const MediaCard = GObject.registerClass({
         this._empty.add_child(new St.Label({text: 'Abra um player de mídia para controlá-lo aqui', style_class: 'cadencia-meta', x_align: Clutter.ActorAlign.CENTER}));
         this.add_child(this._empty);
 
-        this._managerId = manager.connect('changed', () => this.rebuild());
+        // com o popup fechado só marcamos como desatualizado; reconstrói ao abrir
+        this._managerId = manager.connect('changed', () => {
+            if (this._active)
+                this.rebuild();
+            else
+                this._dirty = true;
+        });
         this.rebuild();
     }
 
     // chamado quando o menu abre/fecha: só consulta a posição enquanto visível
     setActive(active) {
         this._active = active;
-        this._stopTick();
         if (active) {
-            this._syncPosition();
+            if (this._dirty)
+                this.rebuild();
+            else
+                this._syncPosition();
+        }
+        this._updateTick();
+    }
+
+    // o relógio só corre com o popup aberto e o player tocando
+    _updateTick() {
+        const want = this._active && !!this._player?.playing;
+        if (want && !this._tick) {
             this._tick = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
                 this._syncPosition();
                 return GLib.SOURCE_CONTINUE;
             });
+        } else if (!want) {
+            this._stopTick();
         }
     }
 
@@ -167,7 +191,7 @@ export const MediaCard = GObject.registerClass({
         if (!player || this._dragging)
             return;
         const pos = await player.getPosition();
-        if (player !== this._player || this._dragging || pos === null)
+        if (this._dead || player !== this._player || this._dragging || pos === null)
             return;
         this._position = pos;
         this._renderPosition();
@@ -202,18 +226,8 @@ export const MediaCard = GObject.registerClass({
         const player = this._manager.current;
         const changedPlayer = player !== this._player;
         this._player = player;
-
-        // chips só com mais de um player
-        this._chips.destroy_all_children();
-        this._chips.visible = list.length > 1;
-        for (const p of list) {
-            const chip = new St.Button({
-                label: p.identity, can_focus: true, reactive: true, track_hover: true,
-                style_class: `cadencia-chip${p === player ? ' active' : ''}`,
-            });
-            chip.connect('clicked', () => this._manager.pin(p));
-            this._chips.add_child(chip);
-        }
+        this._dirty = false;
+        this._rebuildChips(list, player);
 
         const has = !!player;
         for (const w of [this._track, this._progress, this._controls, this._volRow])
@@ -250,22 +264,54 @@ export const MediaCard = GObject.registerClass({
 
         this._volRow.visible = player.hasVolume;
         this._updating = true;
-        this._vol.value = Math.min(1, player.volume);
+        if (!this._volDragging)
+            this._vol.value = Math.min(1, player.volume);
         this._updating = false;
         this._syncVolumeIcon();
 
         if (changedPlayer || !player.playing)
             this._syncPosition();
+        this._updateTick();
         this._loadArt(player);
     }
 
+    // chips só com mais de um player; só recria quando a lista muda
+    _rebuildChips(list, current) {
+        const names = list.map(p => p.identity);
+        const labels = list.map((p, i) => names.indexOf(p.identity) === i || names.filter(n => n === p.identity).length === 1
+            ? p.identity
+            : `${p.identity} (${names.slice(0, i + 1).filter(n => n === p.identity).length})`);
+        const key = list.map((p, i) => `${p.busName}|${labels[i]}`).join(',');
+
+        if (key !== this._chipsKey) {
+            this._chipsKey = key;
+            this._chips.destroy_all_children();
+            list.forEach((p, i) => {
+                const chip = new St.Button({
+                    label: labels[i], can_focus: true, reactive: true, track_hover: true,
+                    style_class: 'cadencia-chip',
+                });
+                chip.connect('clicked', () => this._manager.pin(p));
+                chip._busName = p.busName;
+                this._chips.add_child(chip);
+            });
+        }
+        this._chips.visible = list.length > 1;
+        for (const chip of this._chips.get_children()) {
+            if (chip._busName === current?.busName)
+                chip.add_style_class_name('active');
+            else
+                chip.remove_style_class_name('active');
+        }
+    }
+
     async _loadArt(player) {
-        const key = `${player.busName}|${player.artUrl}`;
+        const key = `${player.busName}|${player.artUrl}|${player.title}`;
         if (key === this._artKey)
             return;
         this._artKey = key;
         const path = await this._art.load(player.artUrl);
-        if (key !== this._artKey)
+        if (this._dead || key !== this._artKey)
             return;
         if (path) {
             const uri = GLib.filename_to_uri(path, null).replace(/'/g, '%27');
@@ -278,6 +324,9 @@ export const MediaCard = GObject.registerClass({
     }
 
     vfunc_destroy() {
+        this._dead = true;
+        this._artKey = null;
+        this._player = null;
         this._stopTick();
         if (this._managerId) {
             this._manager.disconnect(this._managerId);

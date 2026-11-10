@@ -1,0 +1,14 @@
+{
+  "name": "cadencia",
+  "private": true,
+  "type": "module",
+  "description": "Ferramentas de desenvolvimento (lint) da extensão Cadência; nada disto vai no zip",
+  "scripts": {
+    "lint": "eslint cadencia@bcocheto.github.io"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^17.14.0"
+  }
+}

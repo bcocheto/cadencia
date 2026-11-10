@@ -51,7 +51,11 @@ const Indicator = GObject.registerClass(class CadenciaIndicator extends PanelMen
         const text = p ? [p.title, p.artist].filter(Boolean).join(' — ') : '';
         this._label.text = text;
         this._label.visible = s.get_boolean('show-title') && !!text;
-        this._label.set_style(`max-width: ${s.get_int('max-title-width')}px;`);
+        const width = s.get_int('max-title-width');
+        if (width !== this._width) {
+            this._width = width;
+            this._label.set_style(`max-width: ${width}px;`);
+        }
     }
 
     vfunc_scroll_event(event) {
@@ -60,12 +64,18 @@ const Indicator = GObject.registerClass(class CadenciaIndicator extends PanelMen
             return Clutter.EVENT_PROPAGATE;
         const dir = event.get_scroll_direction();
         let sign = 0;
-        if (dir === Clutter.ScrollDirection.UP)
+        if (dir === Clutter.ScrollDirection.UP) {
             sign = 1;
-        else if (dir === Clutter.ScrollDirection.DOWN)
+        } else if (dir === Clutter.ScrollDirection.DOWN) {
             sign = -1;
-        else if (dir === Clutter.ScrollDirection.SMOOTH)
-            sign = -Math.sign(event.get_scroll_delta()[1]);
+        } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+            // touchpad: acumula o gesto e aplica um passo a cada unidade de rolagem
+            this._scrollAcc = (this._scrollAcc ?? 0) - event.get_scroll_delta()[1];
+            if (Math.abs(this._scrollAcc) < 1)
+                return Clutter.EVENT_STOP;
+            sign = Math.sign(this._scrollAcc);
+            this._scrollAcc = 0;
+        }
         if (!sign)
             return Clutter.EVENT_PROPAGATE;
         const step = this._settings.get_int('volume-step') / 100;

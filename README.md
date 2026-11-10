@@ -22,7 +22,7 @@ Um indicador discreto com o que está tocando e um popup com capa, progresso, vo
 | | Recurso | Detalhe |
 |---|---|---|
 | 🎧 | **Qualquer player** | Spotify, navegadores (YouTube, SoundCloud...), VLC, mpv, Rhythmbox e tudo que fala MPRIS |
-| 🖼️ | **Capa do álbum** | Capas locais e remotas; as remotas ficam em cache em `~/.cache/cadencia` |
+| 🖼️ | **Capa do álbum** | Capas locais e remotas (só `https`, imagens de até 2 MB); ficam em cache em `~/.cache/cadencia` por 14 dias |
 | ⏱️ | **Progresso com seek** | Clique ou arraste a barra para pular para qualquer ponto |
 | ⏯️ | **Controles completos** | Anterior, tocar/pausar, próxima, aleatório e repetir (faixa ou lista) |
 | 🔊 | **Volume por player** | Controle no popup ou role o mouse sobre o indicador |
@@ -83,7 +83,7 @@ players MPRIS (D-Bus) ──► Manager ──► indicador na barra
 |---|---|
 | `make install` | Compila o schema e copia para `~/.local/share/gnome-shell/extensions` |
 | `make run` | Shell aninhado para testar |
-| `make lint` | Checa a sintaxe dos módulos e o schema |
+| `make lint` | Checa a sintaxe, o schema e roda o ESLint (`npm i` antes) |
 | `make pack` | Gera `dist/cadencia@bcocheto.github.io.shell-extension.zip` |
 
 ## 🗺️ Próximos passos

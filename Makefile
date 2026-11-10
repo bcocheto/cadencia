@@ -24,5 +24,6 @@ pack:
 	@unzip -l dist/$(UUID).shell-extension.zip
 
 lint:
+	@npx --no-install eslint $(SRC) 2>/dev/null && echo "ok eslint" || echo "eslint indisponível ou com avisos (rode npm i)"
 	@for f in $(SRC)/*.js; do node --check --input-type=module < $$f && echo "ok $$f"; done
 	glib-compile-schemas --strict --dry-run $(SRC)/schemas && echo "ok schema"
