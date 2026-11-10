@@ -182,6 +182,12 @@ export const Player = GObject.registerClass({
         }
     }
 
+    // avanço ou recuo relativo, em µs
+    seekBy(us) {
+        if (this.canSeek && this._player)
+            this._player.SeekAsync(Math.round(us)).catch(e => console.error(e));
+    }
+
     // Position não emite sinal de mudança: consultamos sob demanda
     getPosition() {
         if (this._dead || this._posBusy)

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Abre um shell GNOME sem tela com a extensão, players falsos e tira uma captura do popup.
 # A extensão é copiada para um XDG_DATA_HOME temporário e recebe um gancho de teste só na cópia.
-# uso: tools/headless-shot.sh <saida.png> [duo|solo|pause|cover|block|green]
+# uso: tools/headless-shot.sh <saida.png> [duo|solo|pause|cover|block|green|empty|marquee]
 set -e
 OUT=$(realpath -m "$1"); MODE=${2:-duo}
 ROOT=$(cd "$(dirname "$0")/.." && pwd); UUID=cadencia@bcocheto.github.io
@@ -35,11 +35,14 @@ T=$ROOT/tools; SD=$XDG_DATA_HOME/gnome-shell/extensions/$UUID/schemas
 SP="python3 $T/fake_player.py spotify 'Midnight Drive' file://$T/cover.png Playing 'Aurora Lines' 'Neon Skyline' &"
 FF="python3 $T/fake_player.py firefox 'Vídeo no navegador' '' Paused &"
 case $MODE in
-  duo|cover|block|green) P="$SP $FF";; solo) P="$SP";; pause) P="python3 $T/fake_player.py spotify 'Midnight Drive' file://$T/cover.png Paused 'Aurora Lines' 'Neon Skyline' &";;
+  duo|cover|block|green) P="$SP $FF";; solo) P="$SP";; empty) P="";;
+  marquee) P="python3 $T/fake_player.py spotify 'Uma faixa com um título extremamente longo para testar o texto rolante da barra' file://$T/cover.png Playing 'Artista Com Nome Comprido' 'Álbum' &";; pause) P="python3 $T/fake_player.py spotify 'Midnight Drive' file://$T/cover.png Paused 'Aurora Lines' 'Neon Skyline' &";;
 esac
 case $MODE in
   cover) X="GSETTINGS_SCHEMA_DIR=$SD gsettings set org.gnome.shell.extensions.cadencia cover-layout true";;
   block) X="GSETTINGS_SCHEMA_DIR=$SD gsettings set org.gnome.shell.extensions.cadencia blocked-players \"['firefox']\"";;
+  empty) X="GSETTINGS_SCHEMA_DIR=$SD gsettings set org.gnome.shell.extensions.cadencia hide-when-idle false";;
+  marquee) X="GSETTINGS_SCHEMA_DIR=$SD gsettings set org.gnome.shell.extensions.cadencia scroll-title true";;
   green) X="gsettings set org.gnome.desktop.interface accent-color green";;
   *) X=true;;
 esac

@@ -4,6 +4,7 @@ import GObject from 'gi://GObject';
 import Pango from 'gi://Pango';
 import St from 'gi://St';
 
+import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import {Slider} from 'resource:///org/gnome/shell/ui/slider.js';
 
 import {accentFromFile} from './accent.js';
@@ -73,7 +74,7 @@ export const MediaCard = GObject.registerClass({
         this._track = new St.BoxLayout({style_class: 'cadencia-track'});
         this._artBin = new St.Button({
             style_class: 'cadencia-art', can_focus: true, reactive: true,
-            accessible_name: 'Abrir o player',
+            accessible_name: _('Open the player'),
             child: new St.Icon({icon_name: 'audio-x-generic-symbolic', style_class: 'cadencia-art-icon'}),
         });
         this._artBin.connect('clicked', () => this.emit('raise'));
@@ -122,11 +123,11 @@ export const MediaCard = GObject.registerClass({
 
         // ── controles ──
         this._controls = new St.BoxLayout({style_class: 'cadencia-controls', x_align: Clutter.ActorAlign.CENTER});
-        this._btnShuffle = iconButton('media-playlist-shuffle-symbolic', 'toggle', () => this._player?.toggleShuffle(), 'Aleatório');
-        this._btnPrev = iconButton('media-skip-backward-symbolic', 'skip', () => this._player?.previous(), 'Anterior');
-        this._btnPlay = iconButton('media-playback-start-symbolic', 'play', () => this._player?.playPause(), 'Reproduzir ou pausar');
-        this._btnNext = iconButton('media-skip-forward-symbolic', 'skip', () => this._player?.next(), 'Próxima');
-        this._btnLoop = iconButton('media-playlist-repeat-symbolic', 'toggle', () => this._player?.cycleLoop(), 'Repetir');
+        this._btnShuffle = iconButton('media-playlist-shuffle-symbolic', 'toggle', () => this._player?.toggleShuffle(), _('Shuffle'));
+        this._btnPrev = iconButton('media-skip-backward-symbolic', 'skip', () => this._player?.previous(), _('Previous'));
+        this._btnPlay = iconButton('media-playback-start-symbolic', 'play', () => this._player?.playPause(), _('Play or pause'));
+        this._btnNext = iconButton('media-skip-forward-symbolic', 'skip', () => this._player?.next(), _('Next'));
+        this._btnLoop = iconButton('media-playlist-repeat-symbolic', 'toggle', () => this._player?.cycleLoop(), _('Repeat'));
         for (const b of [this._btnShuffle, this._btnPrev, this._btnPlay, this._btnNext, this._btnLoop])
             this._controls.add_child(b);
         this.add_child(this._controls);
@@ -153,8 +154,8 @@ export const MediaCard = GObject.registerClass({
         // ── vazio ──
         this._empty = new St.BoxLayout({vertical: true, style_class: 'cadencia-empty', x_align: Clutter.ActorAlign.CENTER});
         this._empty.add_child(new St.Icon({icon_name: 'audio-headphones-symbolic', x_align: Clutter.ActorAlign.CENTER}));
-        this._empty.add_child(new St.Label({text: 'Nada tocando', style_class: 'cadencia-empty-title', x_align: Clutter.ActorAlign.CENTER}));
-        this._empty.add_child(new St.Label({text: 'Abra um player para controlá-lo aqui', style_class: 'cadencia-meta', x_align: Clutter.ActorAlign.CENTER}));
+        this._empty.add_child(new St.Label({text: _('Nothing playing'), style_class: 'cadencia-empty-title', x_align: Clutter.ActorAlign.CENTER}));
+        this._empty.add_child(new St.Label({text: _('Open a media player to control it here'), style_class: 'cadencia-meta', x_align: Clutter.ActorAlign.CENTER}));
         this.add_child(this._empty);
 
         // com o popup fechado só marcamos como desatualizado; reconstrói ao abrir
@@ -291,7 +292,7 @@ export const MediaCard = GObject.registerClass({
             return;
 
         this._source.text = player.identity;
-        this._title.text = player.title || 'Sem título';
+        this._title.text = player.title || _('Untitled');
         this._artist.text = player.artist;
         this._artist.visible = !!player.artist;
         this._album.text = player.album;
@@ -305,7 +306,7 @@ export const MediaCard = GObject.registerClass({
         this._artBin.opacity = player.playing ? 255 : 190;
 
         this._btnPlay.child.icon_name = player.playing ? 'media-playback-pause-symbolic' : 'media-playback-start-symbolic';
-        this._btnPlay.accessible_name = player.playing ? 'Pausar' : 'Reproduzir';
+        this._btnPlay.accessible_name = player.playing ? _('Pause') : _('Play');
         setEnabled(this._btnPrev, player.canPrev);
         setEnabled(this._btnNext, player.canNext);
 
@@ -315,8 +316,8 @@ export const MediaCard = GObject.registerClass({
             this._btnShuffle.add_style_pseudo_class('checked');
         this._btnLoop.visible = player.loop !== null;
         this._btnLoop.child.icon_name = player.loop === 'Track' ? 'media-playlist-repeat-song-symbolic' : 'media-playlist-repeat-symbolic';
-        this._btnLoop.accessible_name = player.loop === 'Track' ? 'Repetir faixa' : player.loop === 'Playlist' ? 'Repetir tudo' : 'Repetição desligada';
-        this._btnShuffle.accessible_name = player.shuffle ? 'Aleatório ligado' : 'Aleatório desligado';
+        this._btnLoop.accessible_name = player.loop === 'Track' ? _('Repeat track') : player.loop === 'Playlist' ? _('Repeat all') : _('Repeat off');
+        this._btnShuffle.accessible_name = player.shuffle ? _('Shuffle on') : _('Shuffle off');
         this._btnLoop.remove_style_pseudo_class('checked');
         if (player.loop && player.loop !== 'None')
             this._btnLoop.add_style_pseudo_class('checked');

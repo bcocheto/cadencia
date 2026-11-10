@@ -1,0 +1,242 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026 Breno Cocheto
+# This file is distributed under the same license as the cadencia package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cadencia\n"
+"Report-Msgid-Bugs-To: https://github.com/bcocheto/cadencia/issues\n"
+"POT-Creation-Date: 2026-11-10 14:38-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cadencia@bcocheto.github.io/card.js:77
+msgid "Open the player"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:126
+msgid "Shuffle"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:127
+msgid "Previous"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:128
+msgid "Play or pause"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:129
+msgid "Next"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:130
+msgid "Repeat"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:157
+msgid "Nothing playing"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:158
+msgid "Open a media player to control it here"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:295
+msgid "Untitled"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:309
+msgid "Pause"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:309
+msgid "Play"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:319
+msgid "Repeat track"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:319
+msgid "Repeat all"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:319
+msgid "Repeat off"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:320
+msgid "Shuffle on"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/card.js:320
+msgid "Shuffle off"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/extension.js:92
+msgid "Media controls"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:33
+msgid "Top bar"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:34
+msgid "Position"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:34
+msgid "Left"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:34
+msgid "Center"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:34
+msgid "Right"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:36
+msgid "Show the track title"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:40
+msgid "Show the artist"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:44
+msgid "Show the album"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:48
+msgid "Separator"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:53
+msgid "App icon"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:54
+msgid "Show the player’s icon instead of the play/pause icon"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:60
+msgid "Maximum text width (px)"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:67
+msgid "Scroll long text"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:68
+msgid "Slides the text when it does not fit, instead of cutting it"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:73
+msgid "Hide when there is no player"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:79
+msgid "Clicks and scrolling"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:80
+msgid "Open the popup"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:80
+msgid "Play/pause"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:80
+msgid "Next track"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:80
+msgid "Previous track"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:80
+msgid "Bring the player forward"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:80
+#: cadencia@bcocheto.github.io/prefs.js:85
+msgid "Nothing"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:81
+msgid "Left click"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:82
+msgid "Middle click"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:83
+msgid "Right click"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:84
+msgid "Scrolling over the indicator"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:85
+msgid "Change the volume"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:85
+msgid "Seek in the track"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:85
+msgid "Change the track"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:88
+msgid "Volume step (%)"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:95
+msgid "Seek step (seconds)"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:103
+msgid "Popup"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:104
+msgid "Accent color"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:105
+msgid "System color"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:105
+msgid "Album cover"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:106
+msgid "From the system (Settings > Appearance) or from the album cover"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:109
+msgid "Large cover"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:110
+msgid "The cover fills the popup width, with centered text"
+msgstr ""
+
+#: cadencia@bcocheto.github.io/prefs.js:115
+msgid "Ignored players (comma-separated)"
+msgstr ""

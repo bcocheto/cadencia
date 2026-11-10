@@ -27,11 +27,13 @@ Um indicador discreto com o que está tocando e um popup com capa, progresso, vo
 | ⏯️ | **Controles completos** | Anterior, tocar/pausar, próxima, aleatório e repetir (faixa ou lista) |
 | 🔊 | **Volume por player** | Controle no popup ou role o mouse sobre o indicador |
 | 🗂️ | **Vários players** | Chips no topo trocam de player; por padrão vale o que está tocando agora |
-| 🖱️ | **Atalhos no indicador** | Clique abre o popup, clique do meio alterna tocar/pausar, rolar muda o volume |
 | 🎨 | **Cor de destaque do sistema** | Segue a cor de destaque do GNOME (Configurações > Aparência), inclusive quando você troca |
 | 🌈 | **Cor da capa (opcional)** | Em vez da cor do sistema, a barra de progresso, o play e o chip ativo assumem a cor dominante da capa |
 | 🖼️ | **Capa em destaque** | Layout opcional com a capa na largura do popup |
 | 🚫 | **Players ignorados** | Esconda players que só atrapalham (abas mudas do navegador, por exemplo) |
+| 🖱️ | **Cliques e rolagem configuráveis** | Cada botão do mouse sobre o indicador faz o que você escolher (popup, tocar/pausar, próxima, anterior, trazer o player); rolar muda volume, avança na faixa ou troca de faixa |
+| 📜 | **Texto rolante** | Títulos longos deslizam na barra em vez de serem cortados (opcional) |
+| 🌍 | **Tradução** | Inglês e português do Brasil, seguindo o idioma do sistema |
 | 🏷️ | **Texto da barra** | Título, artista e álbum com separador configurável, e o ícone do app no lugar do ícone de estado |
 | 🪟 | **Abrir o player** | Clique na capa para trazer a janela do player à frente |
 | ⚙️ | **Preferências** | Posição, texto e ícone da barra, layout do popup, players ignorados e passo do volume |
@@ -91,6 +93,7 @@ players MPRIS (D-Bus) ──► Manager ──► indicador na barra
 | `make install` | Compila o schema e copia para `~/.local/share/gnome-shell/extensions` |
 | `make run` | Shell aninhado para testar |
 | `tools/headless-shot.sh saida.png [duo\|solo\|pause\|cover\|block\|green]` | Abre um shell sem tela com players falsos e salva uma captura do popup |
+| `make pot` | Atualiza o modelo de tradução (`po/cadencia.pot`) e mescla nos `.po` |
 | `make lint` | Checa a sintaxe, o schema e roda o ESLint (`npm i` antes) |
 | `make pack` | Gera `dist/cadencia@bcocheto.github.io.shell-extension.zip` |
 
@@ -99,9 +102,8 @@ players MPRIS (D-Bus) ──► Manager ──► indicador na barra
 - [ ] Publicar no extensions.gnome.org
 - [x] Cor de destaque extraída da capa
 - [x] Players ignorados e texto da barra configurável
-- [ ] Tradução (gettext)
-- [ ] Ações configuráveis de clique e scroll
-- [ ] Texto rolante para títulos longos
+- [x] Tradução (gettext), ações configuráveis e texto rolante
+- [ ] Mais idiomas (contribuições em `po/` são bem-vindas)
 - [ ] Atalho global para abrir o popup
 - [ ] Limpeza automática do cache de capas
 

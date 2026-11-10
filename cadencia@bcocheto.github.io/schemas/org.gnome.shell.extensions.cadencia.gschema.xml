@@ -23,9 +23,60 @@
       <default>true</default>
       <summary>Esconder o indicador quando não há player</summary>
     </key>
-    <key name="scroll-volume" type="b">
-      <default>true</default>
-      <summary>Rolar o mouse sobre o indicador muda o volume</summary>
+    <key name="left-click-action" type="s">
+      <choices>
+        <choice value="menu"/>
+        <choice value="play-pause"/>
+        <choice value="next"/>
+        <choice value="previous"/>
+        <choice value="raise"/>
+        <choice value="none"/>
+      </choices>
+      <default>"menu"</default>
+      <summary>Ação do clique esquerdo no indicador</summary>
+    </key>
+    <key name="middle-click-action" type="s">
+      <choices>
+        <choice value="menu"/>
+        <choice value="play-pause"/>
+        <choice value="next"/>
+        <choice value="previous"/>
+        <choice value="raise"/>
+        <choice value="none"/>
+      </choices>
+      <default>"play-pause"</default>
+      <summary>Ação do clique do meio no indicador</summary>
+    </key>
+    <key name="right-click-action" type="s">
+      <choices>
+        <choice value="menu"/>
+        <choice value="play-pause"/>
+        <choice value="next"/>
+        <choice value="previous"/>
+        <choice value="raise"/>
+        <choice value="none"/>
+      </choices>
+      <default>"menu"</default>
+      <summary>Ação do clique direito no indicador</summary>
+    </key>
+    <key name="scroll-action" type="s">
+      <choices>
+        <choice value="volume"/>
+        <choice value="seek"/>
+        <choice value="track"/>
+        <choice value="none"/>
+      </choices>
+      <default>"volume"</default>
+      <summary>Ação de rolar o mouse sobre o indicador</summary>
+    </key>
+    <key name="seek-step" type="i">
+      <range min="1" max="60"/>
+      <default>5</default>
+      <summary>Passo do avanço ao rolar (segundos)</summary>
+    </key>
+    <key name="scroll-title" type="b">
+      <default>false</default>
+      <summary>Rolar o texto da barra quando ele não cabe</summary>
     </key>
     <key name="volume-step" type="i">
       <range min="1" max="25"/>

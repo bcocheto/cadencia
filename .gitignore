@@ -2,3 +2,4 @@ dist/
 *.compiled
 node_modules/
 package-lock.json
+cadencia@bcocheto.github.io/locale/

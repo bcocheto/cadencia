@@ -4,7 +4,7 @@ import Pango from 'gi://Pango';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
 
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
@@ -21,10 +21,17 @@ const Indicator = GObject.registerClass(class CadenciaIndicator extends PanelMen
         const box = new St.BoxLayout({style_class: 'cadencia-panel'});
         this._icon = new St.Icon({icon_name: 'media-playback-start-symbolic', style_class: 'system-status-icon cadencia-panel-icon'});
         this._label = new St.Label({y_align: Clutter.ActorAlign.CENTER, style_class: 'cadencia-panel-label'});
-        this._label.clutter_text.ellipsize = Pango.EllipsizeMode.END;
+        // o rótulo fica num recorte de largura máxima; com o texto rolante ligado ele anda dentro dele
+        this._clip = new St.Widget({
+            layout_manager: new Clutter.FixedLayout(),
+            clip_to_allocation: true,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._clip.add_child(this._label);
         box.add_child(this._icon);
-        box.add_child(this._label);
+        box.add_child(this._clip);
         this.add_child(box);
+        this._label.connect('notify::mapped', () => this._updateMarquee());
 
         this.menu.actor.add_style_class_name('cadencia-boxpointer');
         this._card = new MediaCard(manager, art, settings);
@@ -36,7 +43,7 @@ const Indicator = GObject.registerClass(class CadenciaIndicator extends PanelMen
         this.menu.connect('open-state-changed', (_m, open) => this._card.setActive(open));
 
         this._managerId = manager.connect('changed', () => this._sync());
-        this._settingIds = ['show-title', 'max-title-width', 'hide-when-idle', 'show-artist', 'show-album', 'separator', 'use-app-icon']
+        this._settingIds = ['show-title', 'max-title-width', 'hide-when-idle', 'show-artist', 'show-album', 'separator', 'use-app-icon', 'scroll-title']
             .map(k => settings.connect(`changed::${k}`, () => this._sync()));
         this._sync();
     }
@@ -70,7 +77,8 @@ const Indicator = GObject.registerClass(class CadenciaIndicator extends PanelMen
             this._icon.gicon = appIcon;
         } else {
             this._icon.gicon = null;
-            this._icon.icon_name = p?.playing ? 'media-playback-start-symbolic' : 'media-playback-pause-symbolic';
+            this._icon.icon_name = !p ? 'multimedia-player-symbolic'
+                : p.playing ? 'media-playback-start-symbolic' : 'media-playback-pause-symbolic';
         }
         this._icon.opacity = p && !p.playing ? 150 : 255;
         this.remove_style_pseudo_class('paused');
@@ -81,18 +89,54 @@ const Indicator = GObject.registerClass(class CadenciaIndicator extends PanelMen
         const text = parts.filter(Boolean).join(s.get_string('separator'));
         this._label.text = text;
         this._label.visible = s.get_boolean('show-title') && !!text;
-        this.accessible_name = text ? `Cadência: ${text}` : 'Cadência';
+        this._clip.visible = this._label.visible;
+        this.accessible_name = text || _('Media controls');
+
         const width = s.get_int('max-title-width');
-        if (width !== this._width) {
-            this._width = width;
-            this._label.set_style(`max-width: ${width}px;`);
+        const marquee = s.get_boolean('scroll-title');
+        this._label.clutter_text.ellipsize = marquee ? Pango.EllipsizeMode.NONE : Pango.EllipsizeMode.END;
+        this._label.set_style(marquee ? null : `max-width: ${width}px;`);
+        this._clip.set_style(`max-width: ${width}px;`);
+        this._updateMarquee();
+    }
+
+    // texto rolante: vai até o fim do título e volta, usando só transições do Clutter
+    // (sem timeouts); parar a transição basta para desligar
+    _updateMarquee() {
+        this._label.remove_all_transitions();
+        this._label.translation_x = 0;
+        if (!this._settings.get_boolean('scroll-title') || !this._label.visible || !this._label.mapped)
+            return;
+        const overflow = this._label.get_preferred_width(-1)[1] - this._settings.get_int('max-title-width');
+        if (overflow <= 0)
+            return;
+        const go = target => this._label.ease({
+            translation_x: target,
+            duration: Math.max(1500, overflow * 35),
+            delay: 1800,
+            mode: Clutter.AnimationMode.LINEAR,
+            onComplete: () => go(target ? 0 : -overflow),
+        });
+        go(-overflow);
+    }
+
+    _run(action) {
+        const p = this._manager.current;
+        switch (action) {
+        case 'play-pause': p?.playPause(); break;
+        case 'next': p?.next(); break;
+        case 'previous': p?.previous(); break;
+        case 'raise': this._raisePlayer(); break;
         }
     }
 
     vfunc_scroll_event(event) {
+        const s = this._settings;
+        const action = s.get_string('scroll-action');
         const p = this._manager.current;
-        if (!p?.hasVolume || !this._settings.get_boolean('scroll-volume'))
+        if (!p || action === 'none' || (action === 'volume' && !p.hasVolume))
             return Clutter.EVENT_PROPAGATE;
+
         const dir = event.get_scroll_direction();
         let sign = 0;
         if (dir === Clutter.ScrollDirection.UP) {
@@ -109,21 +153,34 @@ const Indicator = GObject.registerClass(class CadenciaIndicator extends PanelMen
         }
         if (!sign)
             return Clutter.EVENT_PROPAGATE;
-        const step = this._settings.get_int('volume-step') / 100;
-        p.setVolume(Math.min(1, Math.max(0, p.volume + sign * step)));
+
+        if (action === 'volume')
+            p.setVolume(Math.min(1, Math.max(0, p.volume + sign * s.get_int('volume-step') / 100)));
+        else if (action === 'seek')
+            p.seekBy(sign * s.get_int('seek-step') * 1e6);
+        else if (action === 'track')
+            (sign > 0 ? p.previous() : p.next());
         return Clutter.EVENT_STOP;
     }
 
     vfunc_event(event) {
-        // clique do meio: tocar/pausar
-        if (event.type() === Clutter.EventType.BUTTON_PRESS && event.get_button() === Clutter.BUTTON_MIDDLE) {
-            this._manager.current?.playPause();
-            return Clutter.EVENT_STOP;
+        if (event.type() === Clutter.EventType.BUTTON_PRESS) {
+            const key = {
+                [Clutter.BUTTON_PRIMARY]: 'left-click-action',
+                [Clutter.BUTTON_MIDDLE]: 'middle-click-action',
+                [Clutter.BUTTON_SECONDARY]: 'right-click-action',
+            }[event.get_button()];
+            const action = key ? this._settings.get_string(key) : 'menu';
+            if (action !== 'menu') {
+                this._run(action);
+                return Clutter.EVENT_STOP;
+            }
         }
         return super.vfunc_event(event);
     }
 
     vfunc_destroy() {
+        this._label.remove_all_transitions();
         this._manager.disconnect(this._managerId);
         this._settingIds.forEach(id => this._settings.disconnect(id));
         super.vfunc_destroy();
