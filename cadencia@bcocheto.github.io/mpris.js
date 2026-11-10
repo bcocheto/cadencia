@@ -173,6 +173,7 @@ export const Manager = GObject.registerClass({
         this._players = new Map();
         this._pinned = null;
         this._destroyed = false;
+        this._ownerSignal = 0;
         this._dbus = new DBusProxy(Gio.DBus.session, 'org.freedesktop.DBus',
             '/org/freedesktop/DBus', () => this._onReady());
     }
@@ -188,7 +189,9 @@ export const Manager = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
-        this._dbus.connectSignal('NameOwnerChanged', (_p, _s, [name, oldOwner, newOwner]) => {
+        if (this._destroyed)
+            return;
+        this._ownerSignal = this._dbus.connectSignal('NameOwnerChanged', (_p, _s, [name, oldOwner, newOwner]) => {
             if (!name.startsWith(PREFIX))
                 return;
             if (oldOwner)
@@ -245,6 +248,9 @@ export const Manager = GObject.registerClass({
         this._destroyed = true;
         for (const name of [...this._players.keys()])
             this._remove(name);
+        if (this._ownerSignal)
+            this._dbus.disconnectSignal(this._ownerSignal);
+        this._ownerSignal = 0;
         this._dbus = null;
     }
 });
